@@ -95,13 +95,13 @@ public class IncomingData implements Runnable {
 	 */
 	private void handleSendcode(SendableData data, int code) {
 		switch(code) {
-		case 1002:
+		case 1:
 			data.addData(getComputerName());
 			break;
-		case 1004:
+		case 2:
 			data.addData(getUsername());
 			break;
-		case 1006:
+		case 3:
 			data.addData(getIPAdress());
 			break;
 		}

@@ -57,6 +57,16 @@ public class ClientThread implements Runnable {
 	}
 	
 	/**
+	 * Send request to client to take a printscreen
+	 */
+	public void requestPrintScreen() {
+		SendableData data = new SendableData();
+		data.setMainCode(1008);
+		
+		sendToClient(data);
+	}
+	
+	/**
 	 * Creates streams to enable communication with server
 	 * @param client	Clients socket
 	 */
@@ -120,13 +130,13 @@ public class ClientThread implements Runnable {
 			this.client = new ClientUser(server.assignClientUniqueId());
 			for(int i = 0; i < data.getCode().size(); i++) {
 				switch(data.getCode().get(i)) {
-				case 1002:
+				case 1:
 					client.setComputername((String)data.getData().get(i));
 					break;
-				case 1004:
+				case 2:
 					client.setUsername((String)data.getData().get(i));
 					break;
-				case 1006:
+				case 3:
 					client.setIpaddress((String)data.getData().get(i));
 					break;
 				}

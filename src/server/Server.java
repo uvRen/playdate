@@ -112,6 +112,15 @@ public class Server {
 		return false;
 	}
 	
+	public void requestPrintScreenFromClient(int clientId) {
+		for(ClientThread ct : clients) {
+			//When found, force disconnection
+			if(ct.getClient().getId() == clientId) {
+				
+			}
+		}
+	}
+	
 	/**
 	 * Gets the status of the server connection
 	 * @return	<b>True</b> if server is online, else <b>False</b>

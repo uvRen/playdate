@@ -96,9 +96,9 @@ public class SendCodes implements Serializable {
 	private void createSendCodeFile() {
 		tuple.clear();
 		
-		tuple.add(new Tuple("clientComputerName"	, 1002));
-		tuple.add(new Tuple("clientUsername"		, 1004));
-		tuple.add(new Tuple("clientIPAdress"		, 1006));
+		tuple.add(new Tuple("clientComputerName"	, 1));
+		tuple.add(new Tuple("clientUsername"		, 2));
+		tuple.add(new Tuple("clientIPAdress"		, 3));
 		
 		saveSendCodes();
 	}

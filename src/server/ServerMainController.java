@@ -202,7 +202,19 @@ public class ServerMainController {
 			}
 		});
 		
-		contextMenu.getItems().add(forceDisconnect);
+		MenuItem printScreen = new MenuItem("PrintScreen");
+		printScreen.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent e) {
+				@SuppressWarnings("resource")
+				Scanner in = new Scanner(rightClickedItem.getChildren().get(0).getValue()).useDelimiter("[^0-9]+");
+				//Send ID to server and remove client from list
+				int id = in.nextInt();
+			}
+		});
+		
+		contextMenu.getItems().addAll(forceDisconnect, printScreen);
 		
 		treeviewUsers.setCellFactory(tree -> {
 			TreeCell<String> cell = new TreeCell<String>() {

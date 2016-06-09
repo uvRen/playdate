@@ -29,13 +29,18 @@ public class ClientThread implements Runnable {
 	 * Listen for incoming data from client
 	 */
 	public void run() {
-		try {
-			handle(in.readObject());
-		} 
-		catch (ClassNotFoundException | IOException e) {
-			System.err.println("ClientThread.run(): Failed to read inputstream");
-			e.printStackTrace();
+		while(true) {
+			try {
+				handle(in.readObject());
+			}
+			catch (ClassNotFoundException | IOException e) {
+				System.err.println("ClientThread.run(): Failed to read inputstream");
+				System.out.println("remove client from list with id with id: " + client.getId());
+				server.removeClient(client.getId());
+				break;
+			}
 		}
+		
 	}
 	
 	/**
@@ -61,7 +66,7 @@ public class ClientThread implements Runnable {
 	 */
 	public void requestPrintScreen() {
 		SendableData data = new SendableData();
-		data.setMainCode(1008);
+		data.setMainCode(1002);
 		
 		sendToClient(data);
 	}
@@ -123,6 +128,7 @@ public class ClientThread implements Runnable {
 	 */
 	private void handle(Object o) {
 		SendableData data = (SendableData)o;
+		System.out.println("Server data received: " + data.getMainCode());
 		
 		switch(data.getMainCode()) {
 		//Client answer server request '1000'
@@ -142,6 +148,11 @@ public class ClientThread implements Runnable {
 				}
 			}
 			server.addUser(client);
+			break;
+		//Client tell server that client disconnected
+		case 2001:
+			server.removeClient(this.client.getId());
+			System.out.println("Client should be removed");
 			break;
 		}
 	}

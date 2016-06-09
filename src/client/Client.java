@@ -1,15 +1,18 @@
 package client;
 
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import helppackage.SendableData;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
 public class Client {
 	
-	private int port;
-	private Socket client;
+	private int 				port;
+	private Socket 				client;
+	private ObjectOutputStream 	out;
 	
 	public Client(int port) {
 		this.port = port;
@@ -21,9 +24,10 @@ public class Client {
 	 */
 	public boolean connectToServer() {
 		try {
-			client = new Socket("localhost", port);
+			client	= new Socket("localhost", port);
+			out		= new ObjectOutputStream(client.getOutputStream());
 			//Start a Thread that listen for incoming data
-			new Thread(new IncomingData(client)).start();
+			new Thread(new IncomingData(this, client)).start();
 			return true;
 		}
 		catch(IOException e) {
@@ -33,6 +37,20 @@ public class Client {
 						   "Server may be offline. Try again in a moment", 
 						   "Error information\n" + e.getMessage());
 			return false;
+		}
+	}
+
+	/**
+	 * Send data to server
+	 * @param data	Data to be sent
+	 */
+	public void sendToServer(SendableData data) {
+		try {
+			out.writeObject(data);
+			out.flush();
+		}
+		catch(IOException e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -70,7 +88,14 @@ public class Client {
 	 */
 	public boolean disconnectFromServer() {
 		try {
+			/*
+			SendableData data = new SendableData();
+			data.setMainCode(2001);
+			sendToServer(data);
+			*/
+			
 			client.close();
+			out.close();
 			return true;
 		}
 		catch(IOException e) {

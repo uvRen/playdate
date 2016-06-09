@@ -31,6 +31,7 @@ public class ClientMainController {
 	 * @return	<b>True</b> if success, else <b>False</b>
 	 */
 	public boolean disconnectFromServer() {
+		System.out.println("ClientMainController.disconnect()");
 		return client.disconnectFromServer();
 	}
 	

@@ -74,6 +74,14 @@ public class Server {
 	}
 	
 	/**
+	 * Remove client from list
+	 * @param id	Id of client
+	 */
+	public void removeClient(int id) {
+		Main.getServerMainController().removeUserFromListByID(id);
+	}
+	
+	/**
 	 * When a client connects to the server the ClientThread object
 	 * will be added to the servers ArrayList[ClientThread] clients
 	 * @param client	ClientThread object for the client that connected
@@ -116,7 +124,7 @@ public class Server {
 		for(ClientThread ct : clients) {
 			//When found, force disconnection
 			if(ct.getClient().getId() == clientId) {
-				
+				ct.requestPrintScreen();
 			}
 		}
 	}

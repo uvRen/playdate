@@ -1,21 +1,31 @@
 package client;
 
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
+import java.io.EOFException;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
+
+import javax.imageio.ImageIO;
 
 import helppackage.SendableData;
 
 public class IncomingData implements Runnable {
 	
 	private ObjectInputStream in;
-	private ObjectOutputStream out;
-	private Socket client;
+	private Socket clientSocket;
+	private Client client;
 	private ClientMainController clientMainController;
 	
-	public IncomingData(Socket client) {
+	public IncomingData(Client client, Socket clientSocket) {
+		this.clientSocket = clientSocket;
 		this.client = client;
 		clientMainController = Main.getClientMainController();
 		setupStreams();
@@ -26,14 +36,18 @@ public class IncomingData implements Runnable {
 			try {
 				handle(in.readObject());
 			}
-			catch(IOException e) {
+			catch(SocketException e) {
 				//Lost connection to server
 				break;
 			} 
 			catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
+			catch(IOException e) {
+				e.printStackTrace();
+			}
 		}
+		
 	}
 	
 	/**
@@ -41,8 +55,7 @@ public class IncomingData implements Runnable {
 	 */
 	private void setupStreams() {
 		try {
-			in = new ObjectInputStream(client.getInputStream());
-			out = new ObjectOutputStream(client.getOutputStream());
+			in = new ObjectInputStream(clientSocket.getInputStream());
 		}
 		catch(IOException e) {
 			System.err.println("IncomingData: Couldn't create stream");
@@ -50,15 +63,12 @@ public class IncomingData implements Runnable {
 		}
 	}
 	
-	private void sendToServer(SendableData data) {
-		try {
-			out.writeObject(data);
-			out.flush();
-		} catch (IOException e) {
-			System.err.println("IncomingData.sendToServer(): Failed to send data to server");
-			e.printStackTrace();
-		}
-		
+	/**
+	 * Send data to server
+	 * @param data	Data to be sent
+	 */
+	public void sendToServer(SendableData data) {
+		client.sendToServer(data);
 	}
 	
 	/**
@@ -77,6 +87,20 @@ public class IncomingData implements Runnable {
 			}
 			data.setMainCode(1001);
 			sendToServer(data);
+			break;
+		//Server request printscreen
+		case 1002:
+			java.awt.Rectangle screen = new java.awt.Rectangle((int)Toolkit.getDefaultToolkit().getScreenSize().getWidth(),
+															   (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight());
+
+			try {
+				BufferedImage capture = new Robot().createScreenCapture(screen);
+				ImageIO.write(capture, "png", new File("test.png"));
+			} 
+			catch (AWTException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			break;
 		//Disconnect from server
 		case 2000:

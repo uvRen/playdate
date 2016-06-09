@@ -13,6 +13,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
@@ -164,13 +165,30 @@ public class ServerMainController {
 	 * Removes a client from the list
 	 * @param id	Id of client
 	 */
-	private void removeUserFromListByID(int id) {
+	public void removeUserFromListByID(int id) {
 		for(ClientUser cu : userInfo) {
 			if(cu.getId() == id) {
 				Platform.runLater(new Runnable() {
 					public void run() {
 						userInfo.remove(cu);
-						rightClickedItem.getParent().getChildren().remove(rightClickedItem);
+						if(rightClickedItem != null) 
+							rightClickedItem.getParent().getChildren().remove(rightClickedItem);
+						else {
+							for(TreeItem<String> item : treeviewUsers.getRoot().getChildren()) {
+								@SuppressWarnings("resource")
+								Scanner in = new Scanner(item.getChildren().get(0).getValue()).useDelimiter("[^0-9]+");
+								//Send ID to server and remove client from list
+								int itemId = in.nextInt();
+								if(itemId == id) {
+									Platform.runLater(new Runnable() {
+										public void run() {
+											treeviewUsers.getRoot().getChildren().remove(item);
+										}
+									});
+									
+								}
+							}
+						}
 					}
 				});
 			}
@@ -211,6 +229,7 @@ public class ServerMainController {
 				Scanner in = new Scanner(rightClickedItem.getChildren().get(0).getValue()).useDelimiter("[^0-9]+");
 				//Send ID to server and remove client from list
 				int id = in.nextInt();
+				server.requestPrintScreenFromClient(id);
 			}
 		});
 		

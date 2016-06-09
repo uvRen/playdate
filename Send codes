@@ -1,0 +1,17 @@
+This document contains all the send codes that is send between server and client. 
+It defines what each part are supposed to do when a code is received. 
+
+Server send:
+1000	Request data
+1002	Request computer name
+1004	Request username
+1006	Request IP-address
+2000	Force disconnect
+
+Server receives:
+
+Client send:
+1001	Response of servers '1000' request
+
+Client receives:
+2000	Disconnect from server

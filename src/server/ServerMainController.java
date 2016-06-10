@@ -171,8 +171,10 @@ public class ServerMainController {
 				Platform.runLater(new Runnable() {
 					public void run() {
 						userInfo.remove(cu);
+						//If user right-clicked in the TreeView to force-disconnect client
 						if(rightClickedItem != null) 
 							rightClickedItem.getParent().getChildren().remove(rightClickedItem);
+						//If client disconnected from server
 						else {
 							for(TreeItem<String> item : treeviewUsers.getRoot().getChildren()) {
 								@SuppressWarnings("resource")
@@ -185,7 +187,6 @@ public class ServerMainController {
 											treeviewUsers.getRoot().getChildren().remove(item);
 										}
 									});
-									
 								}
 							}
 						}

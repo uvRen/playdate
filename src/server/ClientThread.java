@@ -1,11 +1,15 @@
 package server;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+
+import javax.imageio.ImageIO;
 
 import helppackage.ClientUser;
 import helppackage.SendableData;
@@ -17,6 +21,8 @@ public class ClientThread implements Runnable {
 	private ObjectOutputStream 	out;
 	private Preferences 		preference;
 	private ClientUser			client;
+	
+	private boolean 			showPrintScreen = false;
 	
 	public ClientThread(Server server, Socket client) {
 		this.server = server;
@@ -34,8 +40,6 @@ public class ClientThread implements Runnable {
 				handle(in.readObject());
 			}
 			catch (ClassNotFoundException | IOException e) {
-				System.err.println("ClientThread.run(): Failed to read inputstream");
-				System.out.println("remove client from list with id with id: " + client.getId());
 				server.removeClient(client.getId());
 				break;
 			}
@@ -64,11 +68,12 @@ public class ClientThread implements Runnable {
 	/**
 	 * Send request to client to take a printscreen
 	 */
-	public void requestPrintScreen() {
+	public void requestPrintScreen(boolean showPrintScreen) {
 		SendableData data = new SendableData();
 		data.setMainCode(1002);
 		
 		sendToClient(data);
+		this.showPrintScreen = showPrintScreen;
 	}
 	
 	/**
@@ -123,36 +128,79 @@ public class ClientThread implements Runnable {
 	}
 	
 	/**
+	 * Read incoming data that represents an image
+	 * @param data	SendableData-object from client that contains data about an image
+	 * @return		BufferedImage-object represents an image
+	 */
+	private BufferedImage readPrintScreenFromClient(SendableData data) {
+		int height 		= (int)data.getData().get(0);
+		int width 		= (int)data.getData().get(1);
+		int[] pixels 	= (int[])data.getData().get(2);
+		
+		BufferedImage bi = new BufferedImage(width,height, BufferedImage.TYPE_INT_RGB);
+        bi.setRGB(0, 0, width, height, pixels, 0, width);
+        
+        if(this.showPrintScreen) {
+        	try {
+				ImageIO.write(bi, "png", new File("printscreen.png"));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        	System.out.println("IMAGE SHOULD ALSO BE SHOWN");
+        }
+        else {
+        	try {
+				ImageIO.write(bi, "png", new File("printscreen.png"));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+        
+        //Restore to default
+        this.showPrintScreen = false;
+        
+        return bi;
+	}
+	
+	/**
+	 * Extracts the data that client sent to server about itself.
+	 * @param data	SendableData-object data client sent.
+	 */
+	private void extractClientUserData(SendableData data) {
+		this.client = new ClientUser(server.assignClientUniqueId());
+		for(int i = 0; i < data.getCode().size(); i++) {
+			switch(data.getCode().get(i)) {
+			case 1:
+				client.setComputername((String)data.getData().get(i));
+				break;
+			case 2:
+				client.setUsername((String)data.getData().get(i));
+				break;
+			case 3:
+				client.setIpaddress((String)data.getData().get(i));
+				break;
+			}
+		}
+		server.addUser(client);
+	}
+	
+	/**
 	 * Handles incoming data to server
 	 * @param o	Incoming object
 	 */
 	private void handle(Object o) {
 		SendableData data = (SendableData)o;
-		System.out.println("Server data received: " + data.getMainCode());
 		
 		switch(data.getMainCode()) {
 		//Client answer server request '1000'
 		case 1001:
-			this.client = new ClientUser(server.assignClientUniqueId());
-			for(int i = 0; i < data.getCode().size(); i++) {
-				switch(data.getCode().get(i)) {
-				case 1:
-					client.setComputername((String)data.getData().get(i));
-					break;
-				case 2:
-					client.setUsername((String)data.getData().get(i));
-					break;
-				case 3:
-					client.setIpaddress((String)data.getData().get(i));
-					break;
-				}
-			}
-			server.addUser(client);
+			extractClientUserData(data);
 			break;
-		//Client tell server that client disconnected
-		case 2001:
-			server.removeClient(this.client.getId());
-			System.out.println("Client should be removed");
+		//Client sent requested printscreen
+		case 1003:
+			readPrintScreenFromClient(data);
 			break;
 		}
 	}

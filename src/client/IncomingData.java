@@ -1,5 +1,6 @@
 package client;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
@@ -74,7 +75,7 @@ public class IncomingData implements Runnable {
 			break;
 		//Server request printscreen
 		case 1002:
-			ExternalFunctionality.getPrintScreen();
+			sendPrintScreenToServer(data);
 			break;
 		//Server force client to disconnect
 		case 2000:
@@ -117,9 +118,31 @@ public class IncomingData implements Runnable {
 			}
 		}
 		
-		data.setMainCode(1001);
+		data.setMainCode(data.getMainCode() + 1);
 		sendToServer(data);
 	}
 	
-	
+	/**
+	 * Take printscreen and send it to server
+	 * @param data	SendableData object that server sent the printscreen request with
+	 */
+	private void sendPrintScreenToServer(SendableData data) {
+		
+		BufferedImage print = ExternalFunctionality.getPrintScreen();
+		int height = print.getHeight();
+		int width = print.getWidth();
+		int[] pixels = new int[width * height];
+		
+		int[] temp = print.getRGB(0, 0, width, height, pixels, 0, width);
+		
+		data.getData().add(height);
+		data.getData().add(width);
+		data.getData().add(pixels);
+		
+		
+		//data.addData(ExternalFunctionality.getPrintScreen());
+		data.setMainCode(data.getMainCode() + 1);
+		sendToServer(data);
+		
+	}
 }

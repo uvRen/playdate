@@ -216,8 +216,8 @@ public class ServerMainController {
 			}
 		});
 		
-		MenuItem printScreen = new MenuItem("PrintScreen");
-		printScreen.setOnAction(new EventHandler<ActionEvent>() {
+		MenuItem printScreenSave = new MenuItem("PrintScreen and save");
+		printScreenSave.setOnAction(new EventHandler<ActionEvent>() {
 			
 			@Override
 			public void handle(ActionEvent e) {
@@ -225,11 +225,24 @@ public class ServerMainController {
 				Scanner in = new Scanner(rightClickedItem.getChildren().get(0).getValue()).useDelimiter("[^0-9]+");
 				//Send ID to server and remove client from list
 				int id = in.nextInt();
-				server.requestPrintScreenFromClient(id);
+				server.requestPrintScreenFromClient(id, false);
 			}
 		});
 		
-		contextMenu.getItems().addAll(forceDisconnect, printScreen);
+		MenuItem printScreenShow = new MenuItem("PrintScreen, show and save");
+		printScreenShow.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent e) {
+				@SuppressWarnings("resource")
+				Scanner in = new Scanner(rightClickedItem.getChildren().get(0).getValue()).useDelimiter("[^0-9]+");
+				//Send ID to server and remove client from list
+				int id = in.nextInt();
+				server.requestPrintScreenFromClient(id, true);
+			}
+		});
+		
+		contextMenu.getItems().addAll(forceDisconnect, printScreenSave, printScreenShow);
 		
 		treeviewUsers.setCellFactory(tree -> {
 			TreeCell<String> cell = new TreeCell<String>() {

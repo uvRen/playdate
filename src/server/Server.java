@@ -8,6 +8,8 @@ import java.util.prefs.Preferences;
 import helppackage.ClientUser;
 import helppackage.SendCodes;
 import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 /**
  * A multi-threaded JavaServer that handles incoming connections and data.
@@ -120,11 +122,11 @@ public class Server {
 		return false;
 	}
 	
-	public void requestPrintScreenFromClient(int clientId) {
+	public void requestPrintScreenFromClient(int clientId, boolean showPrintScreen) {
 		for(ClientThread ct : clients) {
 			//When found, force disconnection
 			if(ct.getClient().getId() == clientId) {
-				ct.requestPrintScreen();
+				ct.requestPrintScreen(showPrintScreen);
 			}
 		}
 	}

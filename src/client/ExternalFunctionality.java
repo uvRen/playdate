@@ -24,7 +24,7 @@ public class ExternalFunctionality {
 			capture = new Robot().createScreenCapture(screen);
 		} 
 		catch (AWTException e) {
-			
+			System.err.println("ExternalFunctionality: Failed to take printscreen");
 			e.printStackTrace();
 		}
 		

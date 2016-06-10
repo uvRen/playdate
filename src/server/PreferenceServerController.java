@@ -2,8 +2,6 @@ package server;
 
 import java.util.prefs.Preferences;
 
-import javax.swing.plaf.OptionPaneUI;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;

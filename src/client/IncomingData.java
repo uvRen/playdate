@@ -1,19 +1,9 @@
 package client;
 
-import java.awt.AWTException;
-import java.awt.Robot;
-import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
-import java.io.EOFException;
-import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
-
-import javax.imageio.ImageIO;
 
 import helppackage.SendableData;
 
@@ -25,9 +15,9 @@ public class IncomingData implements Runnable {
 	private ClientMainController clientMainController;
 	
 	public IncomingData(Client client, Socket clientSocket) {
-		this.clientSocket = clientSocket;
-		this.client = client;
-		clientMainController = Main.getClientMainController();
+		this.clientSocket 		= clientSocket;
+		this.client 			= client;
+		clientMainController 	= Main.getClientMainController();
 		setupStreams();
 	}
 	
@@ -47,7 +37,6 @@ public class IncomingData implements Runnable {
 				e.printStackTrace();
 			}
 		}
-		
 	}
 	
 	/**
@@ -81,87 +70,56 @@ public class IncomingData implements Runnable {
 		switch(data.getMainCode()) {
 		//Server send startup request
 		case 1000:
-			//Go through all send codes in the incoming data
-			for(Integer code : data.getCode()) {
-				handleSendcode(data, code);
-			}
-			data.setMainCode(1001);
-			sendToServer(data);
+			handleStartupRequest(data);
 			break;
 		//Server request printscreen
 		case 1002:
-			java.awt.Rectangle screen = new java.awt.Rectangle((int)Toolkit.getDefaultToolkit().getScreenSize().getWidth(),
-															   (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight());
-
-			try {
-				BufferedImage capture = new Robot().createScreenCapture(screen);
-				ImageIO.write(capture, "png", new File("test.png"));
-			} 
-			catch (AWTException | IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			ExternalFunctionality.getPrintScreen();
 			break;
-		//Disconnect from server
+		//Server force client to disconnect
 		case 2000:
-			if(clientMainController.disconnectFromServer()) {
-				clientMainController.changeTextOnConnectDisconnectMenuItem("Connect to server");
-				clientMainController.showForceDisconnectionWindow();
-			}
+			handleForceDisconnection();
 			break;
 		}
 	}
 	
 	/**
-	 * Go through all the code in SendableData.code and perform action for each one of them
+	 * When server force client to disconnect from server client should disconnect
+	 * and update all necessary text for example 'Disconnect from server' text should be
+	 * changed to 'Connect to server'.
+	 * It also displays a Dialog to announce that server has kicked the client
+	 */
+	private void handleForceDisconnection() {
+		if(clientMainController.disconnectFromServer()) {
+			clientMainController.changeTextOnConnectDisconnectMenuItem("Connect to server");
+			clientMainController.showForceDisconnectionWindow();
+		}
+	}
+	
+	/**
+	 * Collects all data that server requested when client connected. 
+	 * Puts all data in a SendableData-object and the send it back to server
 	 * @param data	SendableData object that server sent
 	 * @param code	Which code that should be executed
 	 */
-	private void handleSendcode(SendableData data, int code) {
-		switch(code) {
-		case 1:
-			data.addData(getComputerName());
-			break;
-		case 2:
-			data.addData(getUsername());
-			break;
-		case 3:
-			data.addData(getIPAdress());
-			break;
+	private void handleStartupRequest(SendableData data) {
+		for(Integer code : data.getCode()) {
+			switch(code) {
+			case 1:
+				data.addData(ExternalFunctionality.getComputerName());
+				break;
+			case 2:
+				data.addData(ExternalFunctionality.getUsername());
+				break;
+			case 3:
+				data.addData(ExternalFunctionality.getIPAdress());
+				break;
+			}
 		}
+		
+		data.setMainCode(1001);
+		sendToServer(data);
 	}
 	
-	/**
-	 * Get username of the user that is logged in
-	 * @return	Name of user
-	 */
-	private String getUsername() {
-		return System.getProperty("user.name");
-	}
 	
-	/**
-	 * Get name of the computer
-	 * @return	Name of computer
-	 */
-	private String getComputerName() {
-		try {
-			return InetAddress.getLocalHost().getHostName();
-		}
-		catch(IOException e) {
-			return "";
-		}
-	}
-	
-	/**
-	 * Get the external IP-address
-	 * @return	External IP-adress
-	 */
-	private String getIPAdress() {
-		try {
-			return InetAddress.getLocalHost().getHostAddress();
-		}
-		catch(IOException e) {
-			return "";
-		}
-	}
 }

@@ -88,12 +88,6 @@ public class Client {
 	 */
 	public boolean disconnectFromServer() {
 		try {
-			/*
-			SendableData data = new SendableData();
-			data.setMainCode(2001);
-			sendToServer(data);
-			*/
-			
 			client.close();
 			out.close();
 			return true;

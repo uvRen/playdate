@@ -118,6 +118,9 @@ public class IncomingData implements Runnable {
 			}
 		}
 		
+		//Always add MAC-address to data, it is non optional
+		data.addData(ExternalFunctionality.getMacAddress());
+		
 		data.setMainCode(data.getMainCode() + 1);
 		sendToServer(data);
 	}

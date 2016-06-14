@@ -5,6 +5,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.Socket;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -157,7 +160,7 @@ public class ClientThread implements Runnable {
 				e.printStackTrace();
 			}
         }
-        
+
         //Restore to default
         this.showPrintScreen = false;
         
@@ -170,6 +173,7 @@ public class ClientThread implements Runnable {
 	 */
 	private void extractClientUserData(SendableData data) {
 		this.client = new ClientUser(server.assignClientUniqueId());
+		
 		for(int i = 0; i < data.getCode().size(); i++) {
 			switch(data.getCode().get(i)) {
 			case 1:
@@ -183,6 +187,7 @@ public class ClientThread implements Runnable {
 				break;
 			}
 		}
+		this.client.setMacaddress((String)data.getData().get(data.getData().size()-1));
 		server.addUser(client);
 	}
 	

@@ -4,6 +4,7 @@ import javafx.beans.property.SimpleStringProperty;
 
 public class ClientUser {
 	private int id;
+	private SimpleStringProperty macaddress;
 	private SimpleStringProperty username;
 	private SimpleStringProperty computername;
 	private SimpleStringProperty ipaddress;
@@ -13,12 +14,14 @@ public class ClientUser {
 		this.username 		= new SimpleStringProperty("");
 		this.computername 	= new SimpleStringProperty("");
 		this.ipaddress 		= new SimpleStringProperty("");
+		this.macaddress 	= new SimpleStringProperty("");
 	}
 	
 	public ClientUser() {
 		this.username 		= new SimpleStringProperty("");
 		this.computername 	= new SimpleStringProperty("");
 		this.ipaddress 		= new SimpleStringProperty("");
+		this.macaddress 	= new SimpleStringProperty("");
 	}
 
 	public int getId() {
@@ -27,6 +30,14 @@ public class ClientUser {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+	
+	public SimpleStringProperty getMacaddress() {
+		return macaddress;
+	}
+
+	public void setMacaddress(String macaddress) {
+		this.macaddress = new SimpleStringProperty(macaddress);
 	}
 
 	public SimpleStringProperty getUsername() {

@@ -109,11 +109,12 @@ public class ServerMainController {
     	}
 			
 		TreeItem<String> id 			= new TreeItem<String>("id: " + 			user.getId());
+		TreeItem<String> macaddress		= new TreeItem<String>("mac: " + 			user.getMacaddress().getValue());
 		TreeItem<String> username 		= new TreeItem<String>("username: " + 		user.getUsername().getValue());
 		TreeItem<String> computername 	= new TreeItem<String>("computername: " + 	user.getComputername().getValue());
 		TreeItem<String> ipaddress 		= new TreeItem<String>("ipaddress: " + 		user.getIpaddress().getValue());
 		
-		newClient.getChildren().addAll(id, username, computername, ipaddress);
+		newClient.getChildren().addAll(id, macaddress, username, computername, ipaddress);
 		
 		rootNode.getChildren().add(newClient);
 	}

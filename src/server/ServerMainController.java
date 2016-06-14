@@ -106,6 +106,9 @@ public class ServerMainController {
     	case "IP address":
     		newClient.setValue((user.getIpaddress().getValue()));
     		break;
+    	case "MAC address":
+    		newClient.setValue((user.getMacaddress().getValue()));
+    		break;
     	}
 			
 		TreeItem<String> id 			= new TreeItem<String>("id: " + 			user.getId());
@@ -113,8 +116,9 @@ public class ServerMainController {
 		TreeItem<String> username 		= new TreeItem<String>("username: " + 		user.getUsername().getValue());
 		TreeItem<String> computername 	= new TreeItem<String>("computername: " + 	user.getComputername().getValue());
 		TreeItem<String> ipaddress 		= new TreeItem<String>("ipaddress: " + 		user.getIpaddress().getValue());
+		TreeItem<String> localipaddress = new TreeItem<String>("localipaddress: " + user.getLocalipaddress().getValue());
 		
-		newClient.getChildren().addAll(id, macaddress, username, computername, ipaddress);
+		newClient.getChildren().addAll(id, macaddress, username, computername, ipaddress, localipaddress);
 		
 		rootNode.getChildren().add(newClient);
 	}
@@ -207,12 +211,18 @@ public class ServerMainController {
 			@Override
 			public void handle(ActionEvent e) {
 				//Extract the ID of client
-				@SuppressWarnings("resource")
-				Scanner in = new Scanner(rightClickedItem.getChildren().get(0).getValue()).useDelimiter("[^0-9]+");
-				//Send ID to server and remove client from list
-				int id = in.nextInt();
-				if(server.forceDisconnectClient(id)) {
-					removeUserFromListByID(id);
+				try {
+					@SuppressWarnings("resource")
+					Scanner in = new Scanner(rightClickedItem.getChildren().get(0).getValue()).useDelimiter("[^0-9]+");
+					int id = in.nextInt();
+					
+					//Send ID to server and remove client from list
+					if(server.forceDisconnectClient(id)) {
+						removeUserFromListByID(id);
+					}
+				}
+				catch (IndexOutOfBoundsException e2) {
+					System.err.println("Didn't click on root node");
 				}
 			}
 		});

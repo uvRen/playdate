@@ -8,6 +8,7 @@ public class ClientUser {
 	private SimpleStringProperty username;
 	private SimpleStringProperty computername;
 	private SimpleStringProperty ipaddress;
+	private SimpleStringProperty localipaddress;
 	
 	public ClientUser(int id) {
 		this.id = id;
@@ -15,6 +16,7 @@ public class ClientUser {
 		this.computername 	= new SimpleStringProperty("");
 		this.ipaddress 		= new SimpleStringProperty("");
 		this.macaddress 	= new SimpleStringProperty("");
+		this.localipaddress = new SimpleStringProperty("");
 	}
 	
 	public ClientUser() {
@@ -22,7 +24,10 @@ public class ClientUser {
 		this.computername 	= new SimpleStringProperty("");
 		this.ipaddress 		= new SimpleStringProperty("");
 		this.macaddress 	= new SimpleStringProperty("");
+		this.localipaddress = new SimpleStringProperty("");
 	}
+
+	
 
 	public int getId() {
 		return id;
@@ -62,5 +67,13 @@ public class ClientUser {
 
 	public void setIpaddress(String ipaddress) {
 		this.ipaddress = new SimpleStringProperty(ipaddress);
+	}
+	
+	public SimpleStringProperty getLocalipaddress() {
+		return localipaddress;
+	}
+
+	public void setLocalipaddress(String localipaddress) {
+		this.localipaddress = new SimpleStringProperty(localipaddress);
 	}
 }

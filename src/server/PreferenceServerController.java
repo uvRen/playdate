@@ -119,7 +119,7 @@ public class PreferenceServerController {
 		Label comboExplain = new Label("What data should be shown about a client");
 		GridPane.setConstraints(comboExplain, 0, 3, 4, 1);
 		
-		ObservableList<String> choice = FXCollections.observableArrayList("Username", "Computername", "IP address");
+		ObservableList<String> choice = FXCollections.observableArrayList("Username", "Computername", "IP address", "MAC address");
 		comboBoxShowClientInfo = new ComboBox<String>(choice);
 		comboBoxShowClientInfo.getSelectionModel().select(preference.get("showclientinfo", "IP address"));
 		GridPane.setConstraints(comboBoxShowClientInfo, 0, 4, 2, 1);

@@ -89,11 +89,11 @@ public class ExternalFunctionality {
 	/**
 	 * Get the external IP-address
 	 * @return	External IP-address
-	 * @throws MalformedURLException 
 	 */
 	public static String getIPAdress() {
         BufferedReader in = null;
         try {
+        	//Send request to checkip.amazonaws.com to receive IP-address
         	URL whatismyip = new URL("http://checkip.amazonaws.com");
             in = new BufferedReader(new InputStreamReader(
                     whatismyip.openStream()));
@@ -103,7 +103,8 @@ public class ExternalFunctionality {
         catch (IOException e) {
 			e.printStackTrace();
 			return "";
-		} 
+		}
+        //Close BufferedReader
         finally {
             if (in != null) {
                 try {
@@ -113,13 +114,18 @@ public class ExternalFunctionality {
                 }
             }
         }
-		/*
+	}
+	
+	/**
+	 * Get the local IP-address
+	 * @return	Local IP-address
+	 */
+	public static String getLocalIPAddress() {
 		try {
 			return InetAddress.getLocalHost().getHostAddress();
 		}
 		catch(IOException e) {
 			return "";
 		}
-		*/
 	}
 }

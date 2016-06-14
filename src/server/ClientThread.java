@@ -188,7 +188,16 @@ public class ClientThread implements Runnable {
 			}
 		}
 		this.client.setMacaddress((String)data.getData().get(data.getData().size()-1));
+		createUserFolder(this.client);
 		server.addUser(client);
+	}
+	
+	/**
+	 * Create a folder in the server folder where all data about an user is stored
+	 * @param client	Client that was connected
+	 */
+	private void createUserFolder(ClientUser client) {
+		//Check if Client already has a folder. If not, create one.
 	}
 	
 	/**

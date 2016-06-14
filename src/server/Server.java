@@ -47,6 +47,8 @@ public class Server {
 			//Start server on given port, default 9999
 			server = new ServerSocket(preference.getInt("port", 9999));
 			
+			
+			
 			//Start a Thread that listen for incoming connections
 			new Thread(new ListenForIncomingConnections(this, server)).start();
 			

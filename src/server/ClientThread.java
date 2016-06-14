@@ -2,6 +2,7 @@ package server;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -131,6 +132,37 @@ public class ClientThread implements Runnable {
 	}
 	
 	/**
+	 * Save printscreen received from client to disk
+	 * @param image	Image to be saved
+	 */
+	private void savePrintScreen(BufferedImage bi) {
+		int tries = 0;
+        
+        while(true) {
+        	//Re-run the code once if it fails because that the folder don't exists
+        	if(tries > 1) 
+        		break;
+        	
+        	tries++;
+        	
+        	try {
+				ImageIO.write(bi, "png", new File(client.getMacaddress().getValue() + "/printscreen.png"));
+			} 
+        	catch (Exception e) {
+        		new File(client.getMacaddress().getValue()).mkdir();
+        	}	
+        	
+        	//If image also should be shown at screen
+	        if(this.showPrintScreen) {
+	        	
+	        }
+        }
+
+        //Restore to default
+        this.showPrintScreen = false;
+	}
+	
+	/**
 	 * Read incoming data that represents an image
 	 * @param data	SendableData-object from client that contains data about an image
 	 * @return		BufferedImage-object represents an image
@@ -143,26 +175,7 @@ public class ClientThread implements Runnable {
 		BufferedImage bi = new BufferedImage(width,height, BufferedImage.TYPE_INT_RGB);
         bi.setRGB(0, 0, width, height, pixels, 0, width);
         
-        if(this.showPrintScreen) {
-        	try {
-				ImageIO.write(bi, "png", new File("printscreen.png"));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-        	System.out.println("IMAGE SHOULD ALSO BE SHOWN");
-        }
-        else {
-        	try {
-				ImageIO.write(bi, "png", new File("printscreen.png"));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-        }
-
-        //Restore to default
-        this.showPrintScreen = false;
+        savePrintScreen(bi);
         
         return bi;
 	}

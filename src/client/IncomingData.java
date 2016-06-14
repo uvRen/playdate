@@ -35,7 +35,8 @@ public class IncomingData implements Runnable {
 				e.printStackTrace();
 			}
 			catch(IOException e) {
-				e.printStackTrace();
+				//Lost connection to server
+				break;
 			}
 		}
 	}

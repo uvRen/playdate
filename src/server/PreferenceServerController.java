@@ -1,11 +1,16 @@
 package server;
 
+import java.io.File;
 import java.util.prefs.Preferences;
+
+import org.w3c.dom.UserDataHandler;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -17,6 +22,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.DirectoryChooser;
 
 public class PreferenceServerController {
 	
@@ -27,11 +33,13 @@ public class PreferenceServerController {
 	
 	private Preferences 		preference;
 	private TreeItem<String>	currentSelection = null;
-	private Button				saveButton;
+	private Button				saveButton,
+								changeLocationButton;
 	
 	private TextField serverNameTextField,
 					  serverPortTextField,
-					  serverConnectionsTextField;
+					  serverConnectionsTextField,
+					  userdataLocationTextField;
 	
 	private CheckBox clientComputerNameCB,
 					 clientUsernameCB,
@@ -97,7 +105,7 @@ public class PreferenceServerController {
 		
 		serverNameTextField = new TextField();
 		serverNameTextField.setText(preference.get("servername", "server1"));
-		GridPane.setConstraints(serverNameTextField, 1, 0);
+		GridPane.setConstraints(serverNameTextField, 1, 0, 2, 1);
 		
 		Label serverPortLabel = new Label("Port");
 		GridPane.setConstraints(serverPortLabel, 0, 1);
@@ -123,8 +131,21 @@ public class PreferenceServerController {
 		comboBoxShowClientInfo = new ComboBox<String>(choice);
 		comboBoxShowClientInfo.getSelectionModel().select(preference.get("showclientinfo", "IP address"));
 		GridPane.setConstraints(comboBoxShowClientInfo, 0, 4, 2, 1);
+		
+		Label userdataLabel = new Label("Destination for user data");
+		GridPane.setConstraints(userdataLabel, 0, 5, 3, 1);
+		
+		userdataLocationTextField = new TextField();
+		userdataLocationTextField.setText(preference.get("userdatalocation", "(default)"));
+		GridPane.setConstraints(userdataLocationTextField, 0, 6, 2, 1);
+		
+		changeLocationButton = new Button("Change");
+		changeLocationButton.setOnAction(new HandleChangeLocationButton(userdataLocationTextField));
+		GridPane.setConstraints(changeLocationButton, 2, 6, 1, 1);
+		
+		
 
-		GridPane.setConstraints(this.saveButton, 0, 14);
+		GridPane.setConstraints(this.saveButton, 0, 12);
 		
 		optionContainer.getChildren().addAll(serverNameLabel, 
 											 serverNameTextField,
@@ -135,8 +156,12 @@ public class PreferenceServerController {
 											 serverConnectionsTextField,
 											 connectionExplain, 
 											 comboExplain,
-											 comboBoxShowClientInfo);
+											 comboBoxShowClientInfo,
+											 userdataLabel,
+											 userdataLocationTextField,
+											 changeLocationButton);
 	}
+	
 	
 	/**
 	 * Add all options connected to 'Client' to the GridPane
@@ -176,6 +201,7 @@ public class PreferenceServerController {
 			preference.putInt("port", 			Integer.parseInt(serverPortTextField.getText()));
 			preference.putInt("connections",	Integer.parseInt(serverConnectionsTextField.getText()));
 			preference.put("showclientinfo", 	comboBoxShowClientInfo.getSelectionModel().getSelectedItem());
+			preference.put("userdatalocation", 	userdataLocationTextField.getText());
 			break;
 		case "Client":
 			preference.putBoolean("clientComputerName", clientComputerNameCB.isSelected());
@@ -205,6 +231,35 @@ public class PreferenceServerController {
 			createOptionsForClient();
 			break;
 		}
-		
 	}
+}
+
+/**
+ * EventHandler for button that allows user to choose where to save user data.
+ * @author Simon
+ *
+ */
+class HandleChangeLocationButton implements EventHandler<ActionEvent> {
+	
+	private TextField location;
+	
+	/**
+	 * Constructor for HandleChangeLocationButton
+	 * @param location	TextField where the path will be shown
+	 */
+	HandleChangeLocationButton(TextField location) {
+		this.location = location;
+	}
+	
+	@Override
+	public void handle(ActionEvent event) {
+		
+		DirectoryChooser chooser = new DirectoryChooser();
+		File directory = chooser.showDialog(((Node)event.getTarget()).getScene().getWindow());
+		
+		if(directory != null) {
+			location.setText(directory.getAbsolutePath());
+		}
+	}
+	
 }

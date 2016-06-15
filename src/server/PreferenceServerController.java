@@ -43,7 +43,8 @@ public class PreferenceServerController {
 	
 	private CheckBox clientComputerNameCB,
 					 clientUsernameCB,
-					 clientIPAdressCB;
+					 clientExternalIPAdressCB,
+					 clientLocalIPAdressCB;
 	
 	private ComboBox<String> comboBoxShowClientInfo;
 	
@@ -180,15 +181,20 @@ public class PreferenceServerController {
 		clientUsernameCB.setSelected(preference.getBoolean("clientUsername", false));
 		GridPane.setConstraints(clientUsernameCB, 0, 2, 2, 1);
 		
-		clientIPAdressCB = new CheckBox("IP");
-		clientIPAdressCB.setSelected(preference.getBoolean("clientIPAdress", false));
-		GridPane.setConstraints(clientIPAdressCB, 0, 3, 2, 1);
+		clientExternalIPAdressCB = new CheckBox("External IP");
+		clientExternalIPAdressCB.setSelected(preference.getBoolean("clientExternalIPAdress", false));
+		GridPane.setConstraints(clientExternalIPAdressCB, 0, 3, 2, 1);
+		
+		clientLocalIPAdressCB = new CheckBox("Local IP");
+		clientLocalIPAdressCB.setSelected(preference.getBoolean("clientLocalIPAdress", false));
+		GridPane.setConstraints(clientLocalIPAdressCB, 0, 4, 2, 1);
 		
 		GridPane.setConstraints(this.saveButton, 0, 14);
 		
 		optionContainer.getChildren().addAll(clientComputerNameCB,
 											 clientUsernameCB,
-											 clientIPAdressCB,
+											 clientExternalIPAdressCB,
+											 clientLocalIPAdressCB,
 											 saveButton);
 	}
 	/**
@@ -204,9 +210,10 @@ public class PreferenceServerController {
 			preference.put("userdatalocation", 	userdataLocationTextField.getText());
 			break;
 		case "Client":
-			preference.putBoolean("clientComputerName", clientComputerNameCB.isSelected());
-			preference.putBoolean("clientUsername", 	clientUsernameCB.isSelected());
-			preference.putBoolean("clientIPAdress", 	clientIPAdressCB.isSelected());
+			preference.putBoolean("clientComputerName", 	clientComputerNameCB.isSelected());
+			preference.putBoolean("clientUsername", 		clientUsernameCB.isSelected());
+			preference.putBoolean("clientExternalIPAdress", clientExternalIPAdressCB.isSelected());
+			preference.putBoolean("clientLocalIPAdress", 	clientLocalIPAdressCB.isSelected());
 			break;
 		}
 		

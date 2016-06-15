@@ -143,8 +143,6 @@ public class IncomingData implements Runnable {
 		data.getData().add(width);
 		data.getData().add(pixels);
 		
-		
-		//data.addData(ExternalFunctionality.getPrintScreen());
 		data.setMainCode(data.getMainCode() + 1);
 		sendToServer(data);
 		

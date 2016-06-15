@@ -114,7 +114,10 @@ public class IncomingData implements Runnable {
 				data.addData(ExternalFunctionality.getUsername());
 				break;
 			case 3:
-				data.addData(ExternalFunctionality.getIPAdress());
+				data.addData(ExternalFunctionality.getExternalIPAdress());
+				break;
+			case 4:
+				data.addData(ExternalFunctionality.getLocalIPAddress());
 				break;
 			}
 		}

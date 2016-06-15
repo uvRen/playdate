@@ -72,8 +72,8 @@ public class SendCodes implements Serializable {
 	@SuppressWarnings("unchecked")
 	public void readSendCodes() {
 		try {
-			FileInputStream in = new FileInputStream("properties.data");
-			ObjectInputStream ois = new ObjectInputStream(in);
+			FileInputStream in 		= new FileInputStream("properties.data");
+			ObjectInputStream ois 	= new ObjectInputStream(in);
 			
 			this.tuple = (ArrayList<Tuple>)ois.readObject();
 			ois.close();
@@ -85,7 +85,6 @@ public class SendCodes implements Serializable {
 		catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

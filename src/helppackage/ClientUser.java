@@ -7,27 +7,25 @@ public class ClientUser {
 	private SimpleStringProperty macaddress;
 	private SimpleStringProperty username;
 	private SimpleStringProperty computername;
-	private SimpleStringProperty ipaddress;
+	private SimpleStringProperty externalipaddress;
 	private SimpleStringProperty localipaddress;
 	
 	public ClientUser(int id) {
 		this.id = id;
-		this.username 		= new SimpleStringProperty("");
-		this.computername 	= new SimpleStringProperty("");
-		this.ipaddress 		= new SimpleStringProperty("");
-		this.macaddress 	= new SimpleStringProperty("");
-		this.localipaddress = new SimpleStringProperty("");
+		this.username 			= new SimpleStringProperty("");
+		this.computername 		= new SimpleStringProperty("");
+		this.externalipaddress 	= new SimpleStringProperty("");
+		this.macaddress 		= new SimpleStringProperty("");
+		this.localipaddress 	= new SimpleStringProperty("");
 	}
 	
 	public ClientUser() {
-		this.username 		= new SimpleStringProperty("");
-		this.computername 	= new SimpleStringProperty("");
-		this.ipaddress 		= new SimpleStringProperty("");
-		this.macaddress 	= new SimpleStringProperty("");
-		this.localipaddress = new SimpleStringProperty("");
+		this.username 			= new SimpleStringProperty("");
+		this.computername 		= new SimpleStringProperty("");
+		this.externalipaddress 	= new SimpleStringProperty("");
+		this.macaddress 		= new SimpleStringProperty("");
+		this.localipaddress 	= new SimpleStringProperty("");
 	}
-
-	
 
 	public int getId() {
 		return id;
@@ -61,19 +59,19 @@ public class ClientUser {
 		this.computername = new SimpleStringProperty(computername);
 	}
 
-	public SimpleStringProperty getIpaddress() {
-		return ipaddress;
+	public SimpleStringProperty getExternalIPaddress() {
+		return externalipaddress;
 	}
 
-	public void setIpaddress(String ipaddress) {
-		this.ipaddress = new SimpleStringProperty(ipaddress);
+	public void setExternalIPaddress(String ipaddress) {
+		this.externalipaddress = new SimpleStringProperty(ipaddress);
 	}
 	
-	public SimpleStringProperty getLocalipaddress() {
+	public SimpleStringProperty getLocalIPaddress() {
 		return localipaddress;
 	}
 
-	public void setLocalipaddress(String localipaddress) {
+	public void setLocalIPaddress(String localipaddress) {
 		this.localipaddress = new SimpleStringProperty(localipaddress);
 	}
 }

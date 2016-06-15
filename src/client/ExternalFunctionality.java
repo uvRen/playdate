@@ -90,7 +90,7 @@ public class ExternalFunctionality {
 	 * Get the external IP-address
 	 * @return	External IP-address
 	 */
-	public static String getIPAdress() {
+	public static String getExternalIPAdress() {
         BufferedReader in = null;
         try {
         	//Send request to checkip.amazonaws.com to receive IP-address

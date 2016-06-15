@@ -104,7 +104,7 @@ public class ServerMainController {
     		newClient.setValue((user.getComputername().getValue()));
     		break;
     	case "IP address":
-    		newClient.setValue((user.getIpaddress().getValue()));
+    		newClient.setValue((user.getExternalIPaddress().getValue()));
     		break;
     	case "MAC address":
     		newClient.setValue((user.getMacaddress().getValue()));
@@ -115,8 +115,8 @@ public class ServerMainController {
 		TreeItem<String> macaddress		= new TreeItem<String>("mac: " + 			user.getMacaddress().getValue());
 		TreeItem<String> username 		= new TreeItem<String>("username: " + 		user.getUsername().getValue());
 		TreeItem<String> computername 	= new TreeItem<String>("computername: " + 	user.getComputername().getValue());
-		TreeItem<String> ipaddress 		= new TreeItem<String>("ipaddress: " + 		user.getIpaddress().getValue());
-		TreeItem<String> localipaddress = new TreeItem<String>("localipaddress: " + user.getLocalipaddress().getValue());
+		TreeItem<String> ipaddress 		= new TreeItem<String>("ipaddress: " + 		user.getExternalIPaddress().getValue());
+		TreeItem<String> localipaddress = new TreeItem<String>("localipaddress: " + user.getLocalIPaddress().getValue());
 		
 		newClient.getChildren().addAll(id, macaddress, username, computername, ipaddress, localipaddress);
 		

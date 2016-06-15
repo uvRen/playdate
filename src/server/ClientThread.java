@@ -6,9 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.net.Socket;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -120,7 +117,9 @@ public class ClientThread implements Runnable {
 			//for each option that is true, add it do the SendableData
 			for(String key : preference.keys()) {
 				if(preference.getBoolean(key, false)) {
-					data.addCode(Server.sendCodes.getCode(key));
+					//Check if the properties is still active. If it return -1 it's not.
+					if(Server.sendCodes.getCode(key) != -1)
+						data.addCode(Server.sendCodes.getCode(key));
 				}
 			}
 		} catch (BackingStoreException e) {
@@ -196,7 +195,10 @@ public class ClientThread implements Runnable {
 				client.setUsername((String)data.getData().get(i));
 				break;
 			case 3:
-				client.setIpaddress((String)data.getData().get(i));
+				client.setExternalIPaddress((String)data.getData().get(i));
+				break;
+			case 4:
+				client.setLocalIPaddress((String)data.getData().get(i));
 				break;
 			}
 		}

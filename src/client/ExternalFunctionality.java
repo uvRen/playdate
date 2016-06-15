@@ -10,7 +10,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
-import java.net.MalformedURLException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.URL;
@@ -52,22 +51,20 @@ public class ExternalFunctionality {
 	 */
 	public static String getMacAddress() {
 		try {
-			InetAddress ip = InetAddress.getLocalHost();
-			NetworkInterface network = NetworkInterface.getByInetAddress(ip);
-			byte[] mac = network.getHardwareAddress();
+			InetAddress ip 				= InetAddress.getLocalHost();
+			NetworkInterface network 	= NetworkInterface.getByInetAddress(ip);
+			byte[] mac 					= network.getHardwareAddress();
 			
+			//Extract MAC-address from string and represent it in proper format
 			StringBuilder sb = new StringBuilder();
 	        for (int i = 0; i < mac.length; i++) {
 	            sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));        
 	        }
-	        System.out.println(sb.toString());
 	        return sb.toString();
 		} 
 		catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SocketException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return "";

@@ -8,8 +8,6 @@ import java.util.prefs.Preferences;
 import helppackage.ClientUser;
 import helppackage.SendCodes;
 import javafx.application.Platform;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 
 /**
  * A multi-threaded JavaServer that handles incoming connections and data.
@@ -24,6 +22,7 @@ public class Server {
 	private ArrayList<ClientThread> clients;
 	private Preferences 			preference;
 	private int 					clientIdController;
+	private String					operatingSystem;
 	
 	public static SendCodes 		sendCodes;
 	
@@ -36,6 +35,15 @@ public class Server {
 		sendCodes 	= new SendCodes();
 		preference 	= Preferences.userRoot().node(Server.class.getName());
 		clientIdController = 0;
+		operatingSystem = System.getProperty("os.name");
+	}
+	
+	/**
+	 * Check if server is running on Windows
+	 * @return	<b>True</b> if Windows, else <b>False</b>
+	 */
+	public boolean isWindows() {
+		return operatingSystem.startsWith("Windows");
 	}
 	
 	/**

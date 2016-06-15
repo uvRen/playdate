@@ -3,8 +3,6 @@ package server;
 import java.io.File;
 import java.util.prefs.Preferences;
 
-import org.w3c.dom.UserDataHandler;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -137,6 +135,7 @@ public class PreferenceServerController {
 		GridPane.setConstraints(userdataLabel, 0, 5, 3, 1);
 		
 		userdataLocationTextField = new TextField();
+		userdataLocationTextField.setEditable(false);
 		userdataLocationTextField.setText(preference.get("userdatalocation", "(default)"));
 		GridPane.setConstraints(userdataLocationTextField, 0, 6, 2, 1);
 		
@@ -207,7 +206,10 @@ public class PreferenceServerController {
 			preference.putInt("port", 			Integer.parseInt(serverPortTextField.getText()));
 			preference.putInt("connections",	Integer.parseInt(serverConnectionsTextField.getText()));
 			preference.put("showclientinfo", 	comboBoxShowClientInfo.getSelectionModel().getSelectedItem());
-			preference.put("userdatalocation", 	userdataLocationTextField.getText());
+			//Check so path is OK
+			if(!userdataLocationTextField.getText().equals("(default)") && !userdataLocationTextField.getText().equals("")) {
+				preference.put("userdatalocation", 	userdataLocationTextField.getText());
+			}
 			break;
 		case "Client":
 			preference.putBoolean("clientComputerName", 	clientComputerNameCB.isSelected());

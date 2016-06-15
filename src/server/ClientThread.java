@@ -2,11 +2,13 @@ package server;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Paths;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -14,6 +16,7 @@ import javax.imageio.ImageIO;
 
 import helppackage.ClientUser;
 import helppackage.SendableData;
+import javafx.scene.shape.Path;
 
 public class ClientThread implements Runnable {
 	
@@ -213,6 +216,24 @@ public class ClientThread implements Runnable {
 	 */
 	private void createUserFolder(ClientUser client) {
 		//Check if Client already has a folder. If not, create one.
+		java.nio.file.Path path = Paths.get(preference.get("userdatalocation", "") + "/" + client.getMacaddress().getValue());
+		String absolutePath = path.toString();
+		
+		//Create folder if it doesn't exists
+		if(Files.notExists(path, LinkOption.NOFOLLOW_LINKS)) {
+			System.err.println("DON'T EXISTS");
+			//If 'userdatalocation' is default empty
+			if(preference.get("userdatalocation", "").equals("")) {
+				//If server is running on Windows
+				if(server.isWindows()) {
+					new File("playdate-userdata/" + absolutePath).mkdir();
+				}
+			}
+			//If it isn't empty
+			else {
+				new File("/" + absolutePath).mkdir();
+			}
+		}
 	}
 	
 	/**

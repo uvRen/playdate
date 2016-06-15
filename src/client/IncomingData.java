@@ -140,7 +140,7 @@ public class IncomingData implements Runnable {
 		int width = print.getWidth();
 		int[] pixels = new int[width * height];
 		
-		int[] temp = print.getRGB(0, 0, width, height, pixels, 0, width);
+		print.getRGB(0, 0, width, height, pixels, 0, width);
 		
 		data.getData().add(height);
 		data.getData().add(width);

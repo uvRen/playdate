@@ -147,10 +147,10 @@ public class ClientThread implements Runnable {
         	tries++;
         	
         	try {
-				ImageIO.write(bi, "png", new File(client.getMacaddress().getValue() + "/printscreen.png"));
+				ImageIO.write(bi, "png", new File(preference.get("userdatalocation", "") + "\\" + client.getMacaddress().getValue() +"/printscreen.png"));
 			} 
         	catch (Exception e) {
-        		new File(client.getMacaddress().getValue()).mkdir();
+        		new File(preference.get("userdatalocation", "") + "\\" + client.getMacaddress().getValue()).mkdir();
         	}	
         	
         	//If image also should be shown at screen
@@ -216,7 +216,6 @@ public class ClientThread implements Runnable {
 	private void createUserFolder(ClientUser client) {
 		//Check if Client already has a folder. If not, create one.
 		java.nio.file.Path path = Paths.get(preference.get("userdatalocation", "") + "/" + client.getMacaddress().getValue());
-		String absolutePath = path.toString();
 		
 		//Create folder if it doesn't exists
 		if(Files.notExists(path, LinkOption.NOFOLLOW_LINKS)) {
@@ -224,15 +223,16 @@ public class ClientThread implements Runnable {
 			//If 'userdatalocation' is default empty
 			if(preference.get("userdatalocation", "").equals("")) {
 				//If server is running on Windows
-				if(server.isWindows()) {
-					new File("playdate-userdata/" + absolutePath).mkdir();
+				if(Server.isWindows()) {
+					new File(Server.getDeafultSaveLocation() + client.getMacaddress().getValue()).mkdir();
 				}
 			}
 			//If it isn't empty
 			else {
-				new File("/" + absolutePath).mkdir();
+				new File(preference.get("userdatalocation", "") + "\\" + client.getMacaddress().getValue()).mkdir();
 			}
 		}
+		
 	}
 	
 	/**

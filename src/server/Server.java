@@ -60,7 +60,7 @@ public class Server {
 	 */
 	public static String getDeafultSaveLocation() {
 		if(Server.isWindows())
-			return "C:\\Users\\" + ExternalFunctionality.getUsername() + "\\playdate";
+			return "C:\\Users\\" + ExternalFunctionality.getUsername() + "\\playdate\\";
 		else
 			return "";
 	}

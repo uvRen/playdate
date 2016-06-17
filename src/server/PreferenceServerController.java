@@ -3,6 +3,7 @@ package server;
 import java.io.File;
 import java.util.prefs.Preferences;
 
+import client.ExternalFunctionality;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -136,7 +137,7 @@ public class PreferenceServerController {
 		
 		userdataLocationTextField = new TextField();
 		userdataLocationTextField.setEditable(false);
-		userdataLocationTextField.setText(preference.get("userdatalocation", "(default)"));
+		userdataLocationTextField.setText(preference.get("userdatalocation", Server.getDeafultSaveLocation()));
 		GridPane.setConstraints(userdataLocationTextField, 0, 6, 2, 1);
 		
 		changeLocationButton = new Button("Change");
@@ -241,6 +242,7 @@ public class PreferenceServerController {
 			break;
 		}
 	}
+
 }
 
 /**

@@ -1,10 +1,15 @@
 package server;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.prefs.Preferences;
 
+import client.ExternalFunctionality;
 import helppackage.ClientUser;
 import helppackage.SendCodes;
 import javafx.application.Platform;
@@ -22,7 +27,7 @@ public class Server {
 	private ArrayList<ClientThread> clients;
 	private Preferences 			preference;
 	private int 					clientIdController;
-	private String					operatingSystem;
+	private static String			operatingSystem;
 	
 	public static SendCodes 		sendCodes;
 	
@@ -42,8 +47,22 @@ public class Server {
 	 * Check if server is running on Windows
 	 * @return	<b>True</b> if Windows, else <b>False</b>
 	 */
-	public boolean isWindows() {
+	public static boolean isWindows() {
+		if(operatingSystem == null)
+			operatingSystem = System.getProperty("os.name");
 		return operatingSystem.startsWith("Windows");
+	}
+	
+	/**
+	 * Gets the default save path where the client data should be saved.
+	 * Windows should be C:\Users\Username\playdate
+	 * @return
+	 */
+	public static String getDeafultSaveLocation() {
+		if(Server.isWindows())
+			return "C:\\Users\\" + ExternalFunctionality.getUsername() + "\\playdate";
+		else
+			return "";
 	}
 	
 	/**
@@ -55,7 +74,7 @@ public class Server {
 			//Start server on given port, default 9999
 			server = new ServerSocket(preference.getInt("port", 9999));
 			
-			
+			createFolderToContainClientData();
 			
 			//Start a Thread that listen for incoming connections
 			new Thread(new ListenForIncomingConnections(this, server)).start();
@@ -155,6 +174,29 @@ public class Server {
 	 */
 	public int assignClientUniqueId() {
 		return this.clientIdController++;
+	}
+	
+	/**
+	 * Creates a folder where all the data about the clients can be saved.
+	 * If users hasn't select a own path it will be C:\Users\Username\playdate
+	 */
+	private void createFolderToContainClientData() {
+		//User hasn't given a path where to save data, so a folder is created at C:/Users/User
+		java.nio.file.Path path;
+		if(preference.get("userdatalocation", "").equals("")) {
+			path = Paths.get(getDeafultSaveLocation());
+			if(Files.notExists(path, LinkOption.NOFOLLOW_LINKS)) {
+				System.out.println("Create folder at: " + getDeafultSaveLocation());
+				new File(getDeafultSaveLocation()).mkdir();
+			}
+		}
+		//Create a folder where the user wants it to be stored
+		else {
+			path = Paths.get(preference.get("userdatalocation", ""));
+			if(Files.notExists(path, LinkOption.NOFOLLOW_LINKS)) {
+				new File(path.toString()).mkdir();
+			}
+		}
 	}
 }
 

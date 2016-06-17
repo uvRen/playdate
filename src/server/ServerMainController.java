@@ -173,9 +173,11 @@ public class ServerMainController {
 						userInfo.remove(cu);
 						//If user right-clicked in the TreeView to force-disconnect client
 						if(rightClickedItem != null) {
+							//If user clicked a leaf node
 							if(rightClickedItem.isLeaf()) {
 								treeviewUsers.getRoot().getChildren().remove(rightClickedItem.getParent());
 							}
+							//If user clicked a parent node
 							else {
 								treeviewUsers.getRoot().getChildren().remove(rightClickedItem);
 							}
@@ -240,7 +242,6 @@ public class ServerMainController {
 				}
 				catch (IndexOutOfBoundsException e2) {
 					e2.printStackTrace();
-					System.err.println("Didn't click on root node");
 				}
 			}
 		});

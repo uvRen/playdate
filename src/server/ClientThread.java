@@ -16,7 +16,6 @@ import javax.imageio.ImageIO;
 
 import helppackage.ClientUser;
 import helppackage.SendableData;
-import javafx.scene.shape.Path;
 
 public class ClientThread implements Runnable {
 	

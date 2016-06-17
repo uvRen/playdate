@@ -172,8 +172,15 @@ public class ServerMainController {
 					public void run() {
 						userInfo.remove(cu);
 						//If user right-clicked in the TreeView to force-disconnect client
-						if(rightClickedItem != null) 
-							rightClickedItem.getParent().getChildren().remove(rightClickedItem);
+						if(rightClickedItem != null) {
+							if(rightClickedItem.isLeaf()) {
+								treeviewUsers.getRoot().getChildren().remove(rightClickedItem.getParent());
+							}
+							else {
+								treeviewUsers.getRoot().getChildren().remove(rightClickedItem);
+							}
+							
+						}
 						//If client disconnected from server
 						else {
 							for(TreeItem<String> item : treeviewUsers.getRoot().getChildren()) {
@@ -212,9 +219,19 @@ public class ServerMainController {
 			public void handle(ActionEvent e) {
 				//Extract the ID of client
 				try {
+					TreeItem<String> parentNode = null;
+					//If user clicked a leaf node
+					if(rightClickedItem.isLeaf()) {
+						parentNode = rightClickedItem.getParent();
+					}
+					//If user clicked the parent node
+					else
+						parentNode = rightClickedItem;
+					
+					//Extract ID for client
 					@SuppressWarnings("resource")
-					Scanner in = new Scanner(rightClickedItem.getChildren().get(0).getValue()).useDelimiter("[^0-9]+");
-					int id = in.nextInt();
+					Scanner in 	= new Scanner(parentNode.getChildren().get(0).getValue()).useDelimiter("[^0-9]+");
+					int id 		= in.nextInt();
 					
 					//Send ID to server and remove client from list
 					if(server.forceDisconnectClient(id)) {
@@ -222,6 +239,7 @@ public class ServerMainController {
 					}
 				}
 				catch (IndexOutOfBoundsException e2) {
+					e2.printStackTrace();
 					System.err.println("Didn't click on root node");
 				}
 			}

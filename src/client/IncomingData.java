@@ -3,8 +3,12 @@ package client;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Collections;
+import java.util.Enumeration;
 
 import helppackage.SendableData;
 
@@ -29,7 +33,6 @@ public class IncomingData implements Runnable {
 			}
 			catch(SocketException e) {
 				//Lost connection to server
-				System.out.println("SocketException");
 				break;
 			} 
 			catch (ClassNotFoundException e) {
@@ -131,6 +134,8 @@ public class IncomingData implements Runnable {
 			}
 		}
 		
+		broadcast();
+		
 		//Always add MAC-address to data, it is non optional
 		data.addData(ExternalFunctionality.getMacAddress());
 		
@@ -145,9 +150,9 @@ public class IncomingData implements Runnable {
 	private void sendPrintScreenToServer(SendableData data) {
 		
 		BufferedImage print = ExternalFunctionality.getPrintScreen();
-		int height = print.getHeight();
-		int width = print.getWidth();
-		int[] pixels = new int[width * height];
+		int height 			= print.getHeight();
+		int width 			= print.getWidth();
+		int[] pixels 		= new int[width * height];
 		
 		print.getRGB(0, 0, width, height, pixels, 0, width);
 		
@@ -157,6 +162,23 @@ public class IncomingData implements Runnable {
 		
 		data.setMainCode(data.getMainCode() + 1);
 		sendToServer(data);
-		
+	}
+	
+	private void broadcast() {
+		try {
+			Enumeration<NetworkInterface> network = NetworkInterface.getNetworkInterfaces();
+			for(NetworkInterface netint : Collections.list(network)) {
+				System.out.println("Display name: " + netint.getDisplayName());
+				System.out.println("Name: " + netint.getName());
+				Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();
+				for(InetAddress address : Collections.list(inetAddresses)) {
+					System.out.println("Inetaddress: " + address);
+				}
+				System.out.println();
+			}
+		} 
+		catch (SocketException e) {
+			e.printStackTrace();
+		}
 	}
 }

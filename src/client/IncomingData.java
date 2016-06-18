@@ -29,6 +29,7 @@ public class IncomingData implements Runnable {
 			}
 			catch(SocketException e) {
 				//Lost connection to server
+				System.out.println("SocketException");
 				break;
 			} 
 			catch (ClassNotFoundException e) {
@@ -36,6 +37,7 @@ public class IncomingData implements Runnable {
 			}
 			catch(IOException e) {
 				//Lost connection to server
+				handleLostConnectionToServer();
 				break;
 			}
 		}
@@ -96,6 +98,13 @@ public class IncomingData implements Runnable {
 			clientMainController.changeTextOnConnectDisconnectMenuItem("Connect to server");
 			clientMainController.showForceDisconnectionWindow();
 		}
+	}
+	
+	/**
+	 * When client loses the connection to server some data has to be updated
+	 */
+	private void handleLostConnectionToServer() {
+		clientMainController.changeTextOnConnectDisconnectMenuItem("Connect to server");
 	}
 	
 	/**

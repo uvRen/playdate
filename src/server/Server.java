@@ -74,6 +74,7 @@ public class Server {
 			//Start server on given port, default 9999
 			server = new ServerSocket(preference.getInt("port", 9999));
 			
+			//Creates a folder where all userdata can be saved
 			createFolderToContainClientData();
 			
 			//Start a Thread that listen for incoming connections
@@ -95,6 +96,7 @@ public class Server {
 	public boolean stopServer() {
 		try {
 			server.close();
+			closeAllThread();
 			return true;
 		}
 		catch(IOException e) {
@@ -151,6 +153,11 @@ public class Server {
 		return false;
 	}
 	
+	/**
+	 * Request a printscreen from client
+	 * @param clientId			Clients ID
+	 * @param showPrintScreen	If the received printscreen should be shown and saved, or just saved.
+	 */
 	public void requestPrintScreenFromClient(int clientId, boolean showPrintScreen) {
 		for(ClientThread ct : clients) {
 			//When found, force disconnection
@@ -198,6 +205,22 @@ public class Server {
 			}
 		}
 	}
+	
+	/**
+	 * When server is shutting down all threads has to be terminated 
+	 */
+	private void closeAllThread() {
+		for(ClientThread ct : clients) {
+			try {
+				ct.in.close();
+				ct.out.close();
+			}
+			catch(IOException e) {
+				System.err.println("Server failed to close ClientThread streams");
+				e.printStackTrace();
+			}
+		}
+	}
 }
 
 /**
@@ -210,8 +233,8 @@ class ListenForIncomingConnections implements Runnable {
 	private Server server;
 	
 	public ListenForIncomingConnections(Server server, ServerSocket socketserver) {
-		this.socketserver = socketserver;
-		this.server = server;
+		this.socketserver 	= socketserver;
+		this.server 		= server;
 	}
 	
 	public void run() {

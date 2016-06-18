@@ -19,9 +19,10 @@ import helppackage.SendableData;
 
 public class ClientThread implements Runnable {
 	
+	public ObjectInputStream 	in;
+	public ObjectOutputStream 	out;
+	
 	private Server 				server;
-	private ObjectInputStream 	in;
-	private ObjectOutputStream 	out;
 	private Preferences 		preference;
 	private ClientUser			client;
 	
@@ -29,7 +30,7 @@ public class ClientThread implements Runnable {
 	
 	public ClientThread(Server server, Socket client) {
 		this.server = server;
-		preference = Preferences.userRoot().node(Server.class.getName());
+		preference 	= Preferences.userRoot().node(Server.class.getName());
 		setupObjectStreams(client);
 		sendStartupRequestToClient();
 	}
